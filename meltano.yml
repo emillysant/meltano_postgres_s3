@@ -1,0 +1,74 @@
+version: 1
+default_environment: dev
+project_id: 6580d025-f477-44d5-bbe1-34b48197c902
+environments:
+- name: dev
+- name: staging
+- name: prod
+plugins:
+  extractors:
+  - name: tap-postgres
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/tap-postgres.git
+    config:
+      sqlalchemy_url: postgresql://northwind_user:thewindisblowing@localhost:5432/northwind
+    select:
+    - public-suppliers.*
+    - public-categories.*
+    - public-customer_customer_demo.*
+    - public-customer_demographics.*
+    - public-customers.*
+    - public-employee_territories.*
+    - public-shippers.*
+    - public-employees.*
+    - public-orders.*
+    - public-products.*
+    - public-region.*
+    - public-territories.*
+    - public-us_states.*
+
+  - name: tap-s3-csv
+    variant: transferwise
+    pip_url: pipelinewise-tap-s3-csv
+    config:
+      bucket: emilysan-datalake-prod
+      tables:
+      - search_prefix: ''
+        search_pattern: public-customers.csv
+        table_name: public-customers
+        key_properties: [customer_id]
+        delimiter: ','
+      start_date: 2000-01-01T00:00:00Z
+
+
+  loaders:
+  - name: target-s3-csv
+    variant: transferwise
+    pip_url: git+https://github.com/transferwise/pipelinewise-target-s3-csv.git
+    config:
+      s3_bucket: emilysan-datalake-prod
+      naming_convention: '{stream}.csv'
+
+  - name: target-postgres
+    variant: meltanolabs
+    pip_url: meltanolabs-target-postgres
+    config:
+      host: emilysan-app-metadata-emilysan-app-metadata.cl80bob8vvm4.us-east-2.rds.amazonaws.com
+      port: 5432
+      user: main_user
+      password: "6c|~AM![-_<fy3eA%8[}Onxs~rJ>"
+      database: postgres
+      # sqlalchemy_url: postgresql://warehouse_user:warehouse_password@localhost:5434/warehouse
+
+  utilities:
+  - name: dbt-postgres
+    variant: dbt-labs
+    pip_url: dbt-core dbt-postgres git+https://github.com/meltano/dbt-ext.git@main
+    config:
+      host: localhost
+      user: warehouse_user
+      password: warehouse_password
+      port: 5434
+      dbname: warehouse
+      schema: analytics
+      source_schema: tap_s3_csv

@@ -1,0 +1,5 @@
+/db_warehouse
+/dbdata
+/venv
+/.meltano
+.env
