@@ -53,13 +53,14 @@ plugins:
     variant: meltanolabs
     pip_url: meltanolabs-target-postgres
     config:
-      host: emilysan-app-metadata-emilysan-app-metadata.cl80bob8vvm4.us-east-2.rds.amazonaws.com
-      port: 5432
+      host: $HOST
+      port: $PORT
       user: main_user
-      password: "6c|~AM![-_<fy3eA%8[}Onxs~rJ>"
-      database: postgres
+      password: $PASSWORD
+      database: $DATABASE
       # sqlalchemy_url: postgresql://warehouse_user:warehouse_password@localhost:5434/warehouse
 
+      sqlalchemy_url: postgresql://warehouse_user:warehouse_password@localhost:5434/warehouse
   utilities:
   - name: dbt-postgres
     variant: dbt-labs
