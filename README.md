@@ -89,3 +89,31 @@ Este guia fornece instruções sobre como configurar seu ambiente de desenvolvim
 
 Este guia deve ajudá-lo a configurar seu ambiente de desenvolvimento, incluindo um banco de dados local, e acessar serviços em nuvem, além de utilizar o Meltano para extrair e carregar dados de forma eficiente. Se você tiver dúvidas ou problemas, consulte a documentação oficial do serviço em nuvem que está utilizando, do Docker Compose e do Meltano, ou procure ajuda da comunidade.
 
+
+## Comandos principais
+
+### testes
+```
+meltano config tap-csv test
+```
+
+### Extração do csv para o bucket s3 aws
+```
+meltano run tap-csv target-s3-csv
+```
+
+### Extração do banco local para o bucket s3 aws
+```
+docker compose up -d
+meltano run tap-postgres target-s3-csv
+```
+
+### Ingestão do bucket s3 aws para RDS-postegres aws
+```
+meltano run tap-s3-csv target-postgres
+```
+
+### Dbt
+```
+meltano run dbt-postgres:run
+```

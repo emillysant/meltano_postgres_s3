@@ -38,8 +38,75 @@ plugins:
         table_name: public-customers
         key_properties: [customer_id]
         delimiter: ','
-      start_date: 2000-01-01T00:00:00Z
+      - search_prefix: ''
+        search_pattern: public-categories.csv
+        table_name: public-categories
+        key_properties: [category_id]
+        delimiter: ','
+      - search_prefix: ''
+        search_pattern: public-employee_territories.csv
+        table_name: public-employee_territories
+        key_properties: [employee_id, territory_id]
+        delimiter: ','
+      - search_prefix: ''
+        search_pattern: public-employees.csv
+        table_name: public-employees
+        key_properties: [employee_id]
+        delimiter: ','
+      - search_prefix: ''
+        search_pattern: public-orders.csv
+        table_name: public-orders
+        key_properties: [order_id]
+        delimiter: ','
+      - search_prefix: ''
+        search_pattern: public-products.csv
+        table_name: public-products
+        key_properties: [product_id]
+        delimiter: ','
+      - search_prefix: ''
+        search_pattern: public-region.csv
+        table_name: public-region
+        key_properties: [region_id]
+        delimiter: ','
+      - search_prefix: ''
+        search_pattern: public-shippers.csv
+        table_name: public-shippers
+        key_properties: [shipper_id]
+        delimiter: ','
+      - search_prefix: ''
+        search_pattern: public-suppliers.csv
+        table_name: public-suppliers
+        key_properties: [supplier_id]
+        delimiter: ','
+      - search_prefix: ''
+        search_pattern: public-territories.csv
+        table_name: public-territories
+        key_properties: [territory_id]
+        delimiter: ','
+      - search_prefix: ''
+        search_pattern: public-us_states.csv
+        table_name: public-us_states
+        key_properties: [state_id]
+        delimiter: ','
+      - search_prefix: ''
+        search_pattern: order_details.csv
+        table_name: order_details
+        key_properties: [order_id]
+        delimiter: ','
+      start_date: 2024-01-01T00:00:00Z
 
+
+  - name: tap-csv
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/tap-csv.git
+    config:
+      files:
+      - entity: order_details
+        file: order_details.csv
+        path: ./data/order_details.csv
+        keys:
+        - order_id
+        - product_id
 
   loaders:
   - name: target-s3-csv
@@ -58,18 +125,17 @@ plugins:
       user: main_user
       password: $PASSWORD
       database: $DATABASE
-      # sqlalchemy_url: postgresql://warehouse_user:warehouse_password@localhost:5434/warehouse
+    # sqlalchemy_url: postgresql://warehouse_user:warehouse_password@localhost:5434/warehouse
 
-      sqlalchemy_url: postgresql://warehouse_user:warehouse_password@localhost:5434/warehouse
   utilities:
   - name: dbt-postgres
     variant: dbt-labs
     pip_url: dbt-core dbt-postgres git+https://github.com/meltano/dbt-ext.git@main
     config:
-      host: localhost
-      user: warehouse_user
-      password: warehouse_password
-      port: 5434
-      dbname: warehouse
+      host: $HOST
+      port: $PORT
+      user: main_user
+      password: $PASSWORD
+      dbname: $DATABASE
       schema: analytics
       source_schema: tap_s3_csv

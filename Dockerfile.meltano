@@ -14,7 +14,7 @@ COPY . $MELTANO_HOME
 RUN meltano install
 
 # Executar o comando meltano run
-CMD meltano config target-s3-csv && meltano config target-postgres && meltano run tap-postgres target-s3-csv
+CMD meltano config tap-s3-csv && meltano config target-postgres && meltano run tap-s3-csv target-postgres
 
 
 # ---------------Buildar a imagem meltano
